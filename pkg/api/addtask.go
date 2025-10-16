@@ -31,7 +31,7 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Получаем текущее время
 	now := time.Now()
-	currentDate := now.Format("20060102")
+	currentDate := now.Format(DateFormat)
 
 	// Обработка специального значения "today"
 	if task.Date == "today" {
@@ -44,7 +44,7 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Валидация формата даты
-	_, err := time.Parse("20060102", task.Date)
+	_, err := time.Parse(DateFormat, task.Date)
 	if err != nil {
 		writeJson(w, map[string]string{"error": "Дата представлена в неверном формате"}, http.StatusBadRequest)
 		return
@@ -57,7 +57,7 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Парсим дату задачи для дальнейших проверок
-	taskTime, err := time.Parse("20060102", task.Date)
+	taskTime, err := time.Parse(DateFormat, task.Date)
 	if err != nil {
 		writeJson(w, map[string]string{"error": "Дата представлена в неверном формате"}, http.StatusBadRequest)
 		return
@@ -82,7 +82,7 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Добавление задачи в базу данных
-	id, err := db.AddTask(&task)
+	id, err := db.AddTask(&task, DateFormat)
 	if err != nil {
 		writeJson(w, map[string]string{"error": "Ошибка при добавлении задачи"}, http.StatusInternalServerError)
 		return

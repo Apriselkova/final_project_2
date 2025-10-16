@@ -9,7 +9,7 @@ import (
 )
 
 // Константа для формата даты
-const dateFormat = "20060102"
+const DateFormat = "20060102"
 
 // nextDayHandler обрабатывает запросы к API для вычисления следующей даты
 func nextDayHandler(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +24,7 @@ func nextDayHandler(w http.ResponseWriter, r *http.Request) {
 	if nowStr == "" {
 		now = time.Now()
 	} else {
-		now, err = time.Parse(dateFormat, nowStr)
+		now, err = time.Parse(DateFormat, nowStr)
 		if err != nil {
 			http.Error(w, "некорректная дата now", http.StatusBadRequest)
 			return
@@ -32,14 +32,14 @@ func nextDayHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Парсим дату
-	startDate, err := time.Parse(dateFormat, dateStr)
+	startDate, err := time.Parse(DateFormat, dateStr)
 	if err != nil {
 		http.Error(w, "некорректная дата date", http.StatusBadRequest)
 		return
 	}
 
 	// Вызываем функцию NextDate
-	nextDate, err := NextDate(now, startDate.Format(dateFormat), repeat)
+	nextDate, err := NextDate(now, startDate.Format(DateFormat), repeat)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -52,7 +52,7 @@ func nextDayHandler(w http.ResponseWriter, r *http.Request) {
 
 // NextDate вычисляет следующую дату для задачи в соответствии с указанным правилом
 func NextDate(now time.Time, dstart string, repeat string) (string, error) {
-	startDate, err := time.Parse("20060102", dstart)
+	startDate, err := time.Parse(DateFormat, dstart)
 	if err != nil {
 		return "", errors.New("некорректная дата dstart")
 	}
@@ -87,7 +87,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 				break
 			}
 		}
-		return nextDate.Format("20060102"), nil
+		return nextDate.Format(DateFormat), nil
 
 	case "y":
 		for {
@@ -96,7 +96,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 				break
 			}
 		}
-		return nextDate.Format("20060102"), nil
+		return nextDate.Format(DateFormat), nil
 
 	default:
 		return "", errors.New("неподдерживаемый формат")

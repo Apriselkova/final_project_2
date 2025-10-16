@@ -175,7 +175,7 @@ func isValidDate(date string) bool {
 		return false
 	}
 
-	_, err := time.Parse("20060102", date)
+	_, err := time.Parse(DateFormat, date)
 	return err == nil
 }
 

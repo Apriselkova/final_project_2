@@ -61,15 +61,15 @@ func Init(dbFile string) error {
 }
 
 // AddTask добавляет задачу в таблицу scheduler и возвращает идентификатор добавленной записи
-func AddTask(task *Task) (int64, error) {
+func AddTask(task *Task, dateFormat string) (int64, error) {
 	fmt.Println("Это task.Date в DB - ", task.Date)
 	now := time.Now()
 	todayTime := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	task.Date = todayTime.Format("20060102")
+	task.Date = todayTime.Format(dateFormat)
 
 	if task.Date == "today" {
 		todayTime := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-		task.Date = todayTime.Format("20060102")
+		task.Date = todayTime.Format(dateFormat)
 	}
 	var id int64
 	query := `INSERT INTO scheduler (date, title, comment, repeat) VALUES (?, ?, ?, ?)`
