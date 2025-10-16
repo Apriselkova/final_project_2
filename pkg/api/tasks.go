@@ -7,6 +7,8 @@ import (
 	"github.com/Apriselkova/final_project/pkg/db"
 )
 
+const TaskLimit = 20
+
 // TasksResp структура для ответа с задачами
 type TasksResp struct {
 	Tasks []*db.Task `json:"tasks"`
@@ -19,7 +21,7 @@ func tasksHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tasks, err := db.Tasks(20)
+	tasks, err := db.Tasks(TaskLimit)
 	if err != nil {
 		http.Error(w, `{"error":"Ошибка при получении задач"}`, http.StatusInternalServerError)
 		return
@@ -31,5 +33,9 @@ func tasksHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(TasksResp{Tasks: tasks})
+	err = json.NewEncoder(w).Encode(TasksResp{Tasks: tasks})
+	if err != nil {
+		http.Error(w, `{"error":"Внутренняя ошибка сервера"}`, http.StatusInternalServerError)
+		return
+	}
 }

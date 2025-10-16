@@ -10,10 +10,6 @@ import (
 
 // addTaskHandler обрабатывает POST-запросы для добавления задачи
 func addTaskHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		writeJson(w, map[string]string{"error": "Метод не поддерживается"}, http.StatusMethodNotAllowed)
-		return
-	}
 
 	var task db.Task
 
@@ -21,7 +17,6 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 		writeJson(w, map[string]string{"error": "Ошибка десериализации JSON"}, http.StatusBadRequest)
 		return
 	}
-	defer r.Body.Close()
 
 	// Проверка обязательного поля title
 	if task.Title == "" {

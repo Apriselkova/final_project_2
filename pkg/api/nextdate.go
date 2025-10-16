@@ -13,6 +13,11 @@ const DateFormat = "20060102"
 
 // nextDayHandler обрабатывает запросы к API для вычисления следующей даты
 func nextDayHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
 	nowStr := r.FormValue("now")
 	dateStr := r.FormValue("date")
 	repeat := r.FormValue("repeat")
