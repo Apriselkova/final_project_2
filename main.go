@@ -14,6 +14,7 @@ func main() {
 	err := db.Init("scheduler.db")
 	if err != nil {
 		log.Fatalf("Ошибка инициализации базы данных: %v", err)
+		db.Database.Close()
 	}
 
 	// Определяем переменную окружения или используем порт по умолчанию

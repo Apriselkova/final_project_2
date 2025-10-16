@@ -2,12 +2,9 @@ package db
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 	"os"
-	"strconv"
-	"strings"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -82,62 +79,4 @@ func AddTask(task *Task) (int64, error) {
 	}
 	id, err = res.LastInsertId()
 	return id, err
-}
-
-// NextDate вычисляет следующую дату для задачи в соответствии с указанным правилом
-func NextDate(now time.Time, dstart string, repeat string) (string, error) {
-	startDate, err := time.Parse("20060102", dstart)
-	if err != nil {
-		return "", errors.New("некорректная дата dstart")
-	}
-
-	// Проверяем, что правило повторения не пустое
-	if repeat == "" {
-		return "", errors.New("параметр repeat не может быть пустым")
-	}
-
-	parts := strings.Split(repeat, " ")
-	if len(parts) == 0 {
-		return "", errors.New("неверный формат repeat")
-	}
-
-	var nextDate time.Time
-	nextDate = startDate
-
-	switch parts[0] {
-	case "d":
-		if len(parts) != 2 {
-			return "", errors.New("не указано количество дней")
-		}
-		days, err := strconv.Atoi(parts[1])
-		if err != nil || days < 1 || days > 400 {
-			return "", errors.New("недопустимое значение для дней")
-		}
-
-		// Используем цикл для добавления дней
-		for {
-			nextDate = nextDate.AddDate(0, 0, days)
-			if afterNow(nextDate, now) {
-				break
-			}
-		}
-		return nextDate.Format("20060102"), nil
-
-	case "y":
-		for {
-			nextDate = nextDate.AddDate(1, 0, 0)
-			if afterNow(nextDate, now) {
-				break
-			}
-		}
-		return nextDate.Format("20060102"), nil
-
-	default:
-		return "", errors.New("неподдерживаемый формат")
-	}
-}
-
-// afterNow проверяет, является ли date позже now
-func afterNow(date, now time.Time) bool {
-	return date.After(now)
 }

@@ -68,7 +68,7 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Обработка повторяющихся задач
 	if task.Repeat != "" {
-		nextDate, err := db.NextDate(now, task.Date, task.Repeat)
+		nextDate, err := NextDate(now, task.Date, task.Repeat)
 		if err != nil {
 			writeJson(w, map[string]string{"error": "Неправильный формат правила повторения"}, http.StatusBadRequest)
 			return

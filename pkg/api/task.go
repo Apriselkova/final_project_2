@@ -311,7 +311,7 @@ func doneTaskHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		// Для повторяющейся задачи вычисляем следующую дату
 		now := time.Now()
-		nextDate, err := db.NextDate(now, task.Date, task.Repeat)
+		nextDate, err := NextDate(now, task.Date, task.Repeat)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Ошибка при вычислении следующей даты"})
